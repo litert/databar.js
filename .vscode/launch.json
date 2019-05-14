@@ -17,6 +17,20 @@
                 "${workspaceFolder}/examples/*.js",
                 "${workspaceFolder}/examples/**/*.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "[LiteRT/DataBar.js] Example 00 - Connect MySQL",
+            "program": "${workspaceFolder}/src/examples/00.mysql-connect.ts",
+            "sourceMaps": true,
+            "cwd": "${workspaceFolder}",
+            "outFiles": [
+                "${workspaceFolder}/lib/*.js",
+                "${workspaceFolder}/lib/**/*.js",
+                "${workspaceFolder}/examples/*.js",
+                "${workspaceFolder}/examples/**/*.js"
+            ]
         }
     ]
 }

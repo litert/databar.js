@@ -1,3 +1,4 @@
+// tslint:disable: no-console
 import * as DB from "../lib";
 
 (async () => {
@@ -15,7 +16,9 @@ import * as DB from "../lib";
             charset: "utf8mb4"
         });
 
-        console.log(await conn.query("SELECT * FROM metadata_groups;", []));
+        console.log(JSON.stringify(
+            await conn.query("SELECT * FROM metadata_groups;", [])
+        ));
 
         conn.close();
     }

@@ -40,6 +40,7 @@ class MySQL2Factory implements C.IFactory {
         catch (e) {
 
             throw new E.E_CONNECT_FAILED({
+                message: e.message,
                 metadata: {
                     code: e.code
                 }
@@ -58,20 +59,13 @@ class MySQL2Connection implements C.IConnection {
 
     public escape(str: string): string {
 
-        return str.replace(/[\\_%'"]/g, "\\$1")
-        .replace(/\u000d/g, "\\r")
-        .replace(/\u000a/g, "\\n")
-        .replace(/\u0000/g, "\\0")
-        .replace(/\u001a/g, "\\Z")
-        .replace(/\u0008/g, "\\b")
-        .replace(/\u0009/g, "\\t")
-        .replace(/\u0009/g, "\\t");
+        return this._conn.escape(str);
     }
 
     public async query<T>(
         sql: string,
-        args: Array<string | number | null>
-    ): Promise<C.IQueryResult<T>> {
+        args: Array<string | number | null> = []
+    ): Promise<T[]> {
 
         try {
 
@@ -79,22 +73,133 @@ class MySQL2Connection implements C.IConnection {
 
             if (Array.isArray(result)) {
 
-                return {
-                    "affectRows": 0,
-                    "lastInsertId": undefined as any,
-                    "rows": result as any
-                };
+                return result as T[];
             }
             else {
 
-                return {
-                    "affectRows": result.affectedRows || 0,
-                    "lastInsertId": result.insertId || undefined as any,
-                    "rows": undefined as any
-                };
+                return [];
             }
         }
         catch (err) {
+
+            switch (err.errno) {
+            case 1064:
+
+                throw new E.E_SYNTAX_ERROR({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1062:
+
+                throw new E.E_DUP_CONSTRAINT({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1146:
+
+                throw new E.E_TABLE_NOT_FOUND({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1054:
+
+                throw new E.E_COLUMN_NOT_FOUND({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+            }
+
+            throw new E.E_QUERY_FAILED({
+                "message": err.message,
+                "metadata": {
+                    "code": err.code,
+                    "sqlMessage": err.sqlMessage,
+                    "sqlState": err.sqlState
+                }
+            });
+        }
+    }
+
+    public async execute(
+        sql: string,
+        args: Array<string | number | null> = []
+    ): Promise<C.IExecuteResult> {
+
+        try {
+
+            const result = (await this._conn.query(sql, args))[0] as MySQL2.OkPacket;
+
+            return {
+                "affectRows": result.affectedRows || 0,
+                "lastInsertId": result.insertId || undefined as any
+            };
+        }
+        catch (err) {
+
+            switch (err.errno) {
+            case 1064:
+
+                throw new E.E_SYNTAX_ERROR({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1062:
+
+                throw new E.E_DUP_CONSTRAINT({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1146:
+
+                throw new E.E_TABLE_NOT_FOUND({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+
+            case 1054:
+
+                throw new E.E_COLUMN_NOT_FOUND({
+                    "message": err.message,
+                    "metadata": {
+                        "code": err.code,
+                        "sqlMessage": err.sqlMessage,
+                        "sqlState": err.sqlState
+                    }
+                });
+            }
 
             throw new E.E_QUERY_FAILED({
                 "message": err.message,

@@ -24,12 +24,12 @@ export interface IConnectionOptions {
     /**
      * The charset to be used.
      */
-    charset?: string;
+    "charset"?: string;
 
     /**
      * The database to be used.
      */
-    database?: string;
+    "database"?: string;
 
     /**
      * The timezone to be used.
@@ -79,17 +79,28 @@ export interface IExecutionResult {
     "lastInsertId": number;
 }
 
-export interface IQueryResult<T> {
-    affectRows: number;
-    lastInsertId: number;
-    rows: T[];
+export interface IExecuteResult {
+
+    "affectRows": number;
+
+    "lastInsertId": number;
 }
 
 export interface IConnection {
 
     readonly connected: boolean;
 
-    query<T>(sql: string, args: Array<string | number | null>): Promise<IQueryResult<T>>;
+    query<T>(
+        sql: string,
+        args?: Array<string | number | null>
+    ): Promise<T[]>;
+
+    execute(
+        sql: string,
+        args?: Array<string | number | null>
+    ): Promise<IExecuteResult>;
+
+    escape(str: string): string;
 
     close(): void;
 }
