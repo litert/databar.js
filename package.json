@@ -1,5 +1,5 @@
 {
-  "name": "@litert/bar",
+  "name": "@litert/databar",
   "version": "0.1.0",
   "description": "A simple database connection provider.",
   "main": "lib/index.js",
