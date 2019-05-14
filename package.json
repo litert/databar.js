@@ -20,12 +20,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/litert/databar.git"
+    "url": "git+https://github.com/litert/databar.js.git"
   },
   "bugs": {
-    "url": "https://github.com/litert/databar/issues"
+    "url": "https://github.com/litert/databar.js/issues"
   },
-  "homepage": "https://github.com/litert/databar#readme",
+  "homepage": "https://github.com/litert/databar.js#readme",
   "dependencies": {
     "@litert/core": "^1.0.3"
   },
