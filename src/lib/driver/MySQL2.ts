@@ -6,7 +6,7 @@ class MySQL2Factory implements C.IFactory {
 
     public createPool(opts: C.IPoolOptions): C.IPool {
 
-        return new MySQL2Pool(MySQL2.createPool({
+        return new MySQL2Pool(require("mysql2/promise").createPool({
             "host": opts.host,
             "port": opts.port,
             "user": opts.username,
@@ -25,7 +25,7 @@ class MySQL2Factory implements C.IFactory {
 
         try {
 
-            const conn = await MySQL2.createConnection({
+            const conn = await require("mysql2/promise").createConnection({
                 "host": opts.host,
                 "port": opts.port,
                 "user": opts.username,

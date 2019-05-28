@@ -2,15 +2,24 @@ import * as SQLit3 from "sqlite3";
 import * as C from "../Common";
 import * as E from "../Errors";
 
-SQLit3.verbose();
-
 class SQLit3Factory implements C.IFactory {
+
+    private static _inited: boolean = false;
 
     public connect(opts: C.IConnectionOptions): Promise<C.IConnection> {
 
+        const libSQLite3 = require("sqlite3");
+
+        if (!SQLit3Factory._inited) {
+
+            libSQLite3.verbose();
+        }
+
         return new Promise<C.IConnection>((resolve, reject) => {
 
-            const db = new SQLit3.Database(opts.host, (err) => {
+            const CDatabase = libSQLite3.Database;
+
+            const db = new CDatabase(opts.host, (err: any) => {
 
                 if (err) {
 

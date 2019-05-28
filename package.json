@@ -1,6 +1,6 @@
 {
   "name": "@litert/databar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple database connection provider.",
   "main": "lib/index.js",
   "scripts": {
